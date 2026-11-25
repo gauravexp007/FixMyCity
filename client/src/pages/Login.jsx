@@ -14,6 +14,7 @@ export default function Login() {
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
+  const [googleBlocked, setGoogleBlocked] = useState('');
 
   if (user) return <Navigate to={roleHome(user.role)} replace />;
 
@@ -34,10 +35,12 @@ export default function Login() {
     setGoogleLoading(true);
     try {
       const u = await loginWithGoogle();
+      setGoogleBlocked('');
       toast.success('Signed in with Google');
       const dest = location.state?.from?.pathname || roleHome(u.role);
       navigate(dest, { replace: true });
     } catch (err) {
+      if (err?.code === 'auth/unauthorized-domain') setGoogleBlocked(window.location.host);
       toast.error(googleAuthErrorMessage(err));
     } finally { setGoogleLoading(false); }
   };
@@ -66,6 +69,12 @@ export default function Login() {
             <GoogleIcon />
             {googleLoading ? 'Opening Google…' : 'Continue with Google'}
           </button>
+          {googleBlocked && (
+            <div className="mt-3 rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-xs leading-relaxed text-amber-900 dark:border-amber-500/40 dark:bg-amber-500/10 dark:text-amber-100">
+              <p className="font-semibold">Google sign-in is blocked on <span className="font-mono">{googleBlocked}</span></p>
+              <p className="mt-1">Add that exact address in Firebase → Authentication → Settings → Authorized domains, then reload. Email sign-in works right now.</p>
+            </div>
+          )}
           <div className="my-5 flex items-center gap-3 text-[11px] font-medium uppercase tracking-wider text-slate-400">
             <span className="h-px flex-1 bg-slate-200 dark:bg-carbon-700" />
             or sign in with email
