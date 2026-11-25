@@ -60,9 +60,8 @@ export default function Login() {
           </form>
           <p className="mt-6 text-sm text-slate-500">New citizen? <Link to="/register" className="text-tealbrand-700 dark:text-tealbrand-400 font-medium hover:underline">Create an account</Link></p>
           <div className="mt-8 card p-4 text-xs text-slate-500 dark:text-slate-400">
-            <p className="font-medium text-slate-700 dark:text-slate-300 mb-1">Demo accounts (after seeding)</p>
-            <p>admin@civictrack.gov / Password123!</p>
-            <p>citizen.demo@civictrack.gov / Password123!</p>
+            <p className="font-medium text-slate-700 dark:text-slate-300 mb-1">Verified against the database</p>
+            <p>Your login details are checked in the CivicTrack Firebase database. Authority accounts are provisioned by the administrator.</p>
           </div>
         </div>
       </div>

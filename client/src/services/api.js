@@ -1,29 +1,12 @@
-import axios from 'axios';
+import { createDataApi } from './dataApi';
+import { createFirestoreStore } from './firestoreStore';
 
-const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || '/api',
-  withCredentials: true,
-});
-
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('ct_token');
-  if (token) config.headers.Authorization = `Bearer ${token}`;
-  return config;
-});
-
-api.interceptors.response.use(
-  (r) => r,
-  (err) => {
-    if (err.response?.status === 401) {
-      const hasToken = localStorage.getItem('ct_token');
-      if (hasToken) {
-        localStorage.removeItem('ct_token');
-        localStorage.removeItem('ct_user');
-        if (!window.location.pathname.includes('/login')) window.location.href = '/login';
-      }
-    }
-    return Promise.reject(err);
-  }
-);
+/**
+ * The app's single data client. It talks to Firebase Firestore directly, so the
+ * deployed site is one static build with no API server behind it. The method
+ * shape stays axios-like (`{ data }` responses and `error.response.data.message`)
+ * because every page already uses it.
+ */
+const api = createDataApi(createFirestoreStore());
 
 export default api;

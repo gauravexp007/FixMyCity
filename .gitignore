@@ -3,6 +3,6 @@ dist/
 .env
 .env.local
 *-dev.log
-server/src/uploads/*
-!server/src/uploads/.gitkeep
+firebase-debug.log
+firestore-debug.log
 .DS_Store

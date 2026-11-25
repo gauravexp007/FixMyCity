@@ -3,11 +3,9 @@ import { Link } from 'react-router-dom';
 import { Bell, BellRing, CheckCheck, Check, Loader2, Inbox } from 'lucide-react';
 import toast from 'react-hot-toast';
 import api from '../services/api';
-import { getSocket } from '../services/socket';
 import EmptyState from '../components/ui/EmptyState';
 import { PageSkeleton } from '../components/ui/Skeleton';
 import { timeAgo } from '../utils/helpers';
-import { useAuth } from '../context/AuthContext';
 
 const TONE = {
   success: 'bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400',
@@ -17,7 +15,6 @@ const TONE = {
 };
 
 export default function NotificationsPage() {
-  const { user } = useAuth();
   const [data, setData] = useState({ notifications: [], unread: 0 });
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
@@ -26,7 +23,7 @@ export default function NotificationsPage() {
   const load = useCallback(async () => {
     try {
       const { data } = await api.get('/notifications');
-      setData({ notifications: data.notifications, unread: data.unread });
+      setData({ notifications: data.notifications, unread: data.unreadCount || 0 });
     } catch (err) {
       toast.error(err.response?.data?.message || 'Could not load notifications');
     } finally { setLoading(false); }
@@ -34,20 +31,10 @@ export default function NotificationsPage() {
 
   useEffect(() => { load(); }, [load]);
 
-  useEffect(() => {
-    const socket = getSocket();
-    if (!socket) return;
-    const onNew = (n) => {
-      setData(d => ({ notifications: [n, ...d.notifications], unread: d.unread + (n.isRead ? 0 : 1) }));
-    };
-    socket.on('notification', onNew);
-    return () => socket.off('notification', onNew);
-  }, [user?._id]);
-
   const markRead = async (id) => {
     try {
       await api.patch(`/notifications/${id}/read`);
-      setData(d => ({ notifications: d.notifications.map(n => n._id === id ? { ...n, isRead: true } : n), unread: Math.max(0, d.unread - 1) }));
+      setData(d => ({ notifications: d.notifications.map(n => n._id === id ? { ...n, read: true } : n), unread: Math.max(0, d.unread - 1) }));
     } catch { toast.error('Could not mark notification as read'); }
   };
 
@@ -55,13 +42,13 @@ export default function NotificationsPage() {
     setBusy(true);
     try {
       await api.patch('/notifications/read-all');
-      setData(d => ({ notifications: d.notifications.map(n => ({ ...n, isRead: true })), unread: 0 }));
+      setData(d => ({ notifications: d.notifications.map(n => ({ ...n, read: true })), unread: 0 }));
       toast.success('All notifications marked as read');
     } catch { toast.error('Could not update notifications'); }
     finally { setBusy(false); }
   };
 
-  const list = filter === 'unread' ? data.notifications.filter(n => !n.isRead) : data.notifications;
+  const list = filter === 'unread' ? data.notifications.filter(n => !n.read) : data.notifications;
 
   if (loading) return <PageSkeleton />;
 
@@ -91,21 +78,21 @@ export default function NotificationsPage() {
       ) : (
         <div className="card divide-y divide-slate-100 dark:divide-carbon-800 overflow-hidden">
           {list.map(n => (
-            <div key={n._id} className={`flex gap-4 p-4 sm:p-5 transition ${n.isRead ? '' : 'bg-tealbrand-50/40 dark:bg-tealbrand-900/10'}`}>
+            <div key={n._id} className={`flex gap-4 p-4 sm:p-5 transition ${n.read ? '' : 'bg-tealbrand-50/40 dark:bg-tealbrand-900/10'}`}>
               <div className={`h-10 w-10 rounded-xl flex items-center justify-center shrink-0 ${TONE[n.type] || TONE.info}`}>
-                {n.isRead ? <Bell size={18} /> : <BellRing size={18} />}
+                {n.read ? <Bell size={18} /> : <BellRing size={18} />}
               </div>
               <div className="min-w-0 flex-1">
                 <div className="flex items-start justify-between gap-3">
-                  <p className={`text-sm ${n.isRead ? 'text-slate-700 dark:text-slate-300' : 'font-semibold text-navy-900 dark:text-white'}`}>{n.title}</p>
+                  <p className={`text-sm ${n.read ? 'text-slate-700 dark:text-slate-300' : 'font-semibold text-navy-900 dark:text-white'}`}>{n.title}</p>
                   <span className="text-[11px] text-slate-400 whitespace-nowrap">{timeAgo(n.createdAt)}</span>
                 </div>
                 <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{n.message}</p>
                 <div className="mt-2 flex items-center gap-3">
                   {n.complaint && (
-                    <Link to={`/complaints/${n.complaint}`} className="text-xs font-medium text-tealbrand-700 dark:text-tealbrand-400 hover:underline">View complaint</Link>
+                    <Link to={`/complaints/${n.complaint?._id || n.complaint}`} className="text-xs font-medium text-tealbrand-700 dark:text-tealbrand-400 hover:underline">View complaint</Link>
                   )}
-                  {!n.isRead && (
+                  {!n.read && (
                     <button onClick={() => markRead(n._id)} className="text-xs font-medium text-slate-500 hover:text-navy-700 dark:hover:text-white flex items-center gap-1"><Check size={12} /> Mark read</button>
                   )}
                 </div>

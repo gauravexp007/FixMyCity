@@ -1,6 +1,5 @@
 import { createContext, useContext, useEffect, useState, useCallback } from 'react';
 import api from '../services/api';
-import { connectSocket, disconnectSocket } from '../services/socket';
 
 const AuthContext = createContext();
 export const useAuth = () => useContext(AuthContext);
@@ -18,7 +17,6 @@ export function AuthProvider({ children }) {
       const { data } = await api.get('/auth/me');
       setUser(data.user);
       localStorage.setItem('ct_user', JSON.stringify(data.user));
-      connectSocket(data.user._id || data.user.id);
     } catch {
       localStorage.removeItem('ct_token'); localStorage.removeItem('ct_user'); setUser(null);
     } finally { setLoading(false); }
@@ -31,7 +29,6 @@ export function AuthProvider({ children }) {
     localStorage.setItem('ct_token', data.token);
     localStorage.setItem('ct_user', JSON.stringify(data.user));
     setUser(data.user);
-    connectSocket(data.user._id || data.user.id);
     return data.user;
   };
 
@@ -40,13 +37,13 @@ export function AuthProvider({ children }) {
     localStorage.setItem('ct_token', data.token);
     localStorage.setItem('ct_user', JSON.stringify(data.user));
     setUser(data.user);
-    connectSocket(data.user._id || data.user.id);
     return data.user;
   };
 
   const logout = () => {
+    api.signOut?.();
     localStorage.removeItem('ct_token'); localStorage.removeItem('ct_user');
-    disconnectSocket(); setUser(null);
+    setUser(null);
   };
 
   const updateUser = (u) => { setUser(u); localStorage.setItem('ct_user', JSON.stringify(u)); };
