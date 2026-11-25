@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState, useCallback } from 'react';
 import api from '../services/api';
-import { signInWithGoogleAccount, signOutOfFirebase } from '../services/firebase';
+import { signInWithGoogleAccount, signOutOfFirebase, watchAuthState } from '../services/firebase';
 
 const AuthContext = createContext();
 export const useAuth = () => useContext(AuthContext);
@@ -29,26 +29,45 @@ export function AuthProvider({ children }) {
     } finally { setLoading(false); }
   }, []);
 
-  useEffect(() => { refresh(); }, [refresh]);
+  /**
+   * Firebase Authentication is the identity for Google accounts. The app then
+   * reads (or creates) the matching profile in the Firestore `users` collection
+   * and signs the person in with that stored record.
+   */
+  const syncGoogleUser = useCallback(async (googleUser) => {
+    const { data } = await api.post('/auth/google', {
+      uid: googleUser.uid,
+      email: googleUser.email,
+      name: googleUser.displayName,
+      avatar: googleUser.photoURL,
+    });
+    return startSession(data);
+  }, []);
+
+  useEffect(() => {
+    refresh();
+    // A returning Google user is restored by Firebase Auth on page load; the
+    // profile is fetched from the database rather than trusted from local state.
+    const unsubscribe = watchAuthState((googleUser) => {
+      if (!googleUser?.email) return;
+      syncGoogleUser(googleUser).then(setUser).catch(() => {});
+    });
+    return unsubscribe;
+  }, [refresh, syncGoogleUser]);
 
   const login = async (email, password) => {
     const { data } = await api.post('/auth/login', { email, password });
-    return startSession(data);
+    const signedIn = startSession(data);
+    setUser(signedIn);
+    return signedIn;
   };
 
-  /** Google popup → Firebase Authentication → Firestore user record → session. */
+  /** Google popup → Firebase Authentication → Firestore profile → app session. */
   const loginWithGoogle = async () => {
     const googleUser = await signInWithGoogleAccount();
     try {
-      const { data } = await api.post('/auth/google', {
-        uid: googleUser.uid,
-        email: googleUser.email,
-        name: googleUser.displayName,
-        avatar: googleUser.photoURL,
-      });
-      return startSession(data);
+      return await syncGoogleUser(googleUser);
     } catch (error) {
-      // The Google session exists but the app session could not be created.
       await signOutOfFirebase().catch(() => {});
       throw error;
     }
@@ -56,7 +75,9 @@ export function AuthProvider({ children }) {
 
   const register = async (payload) => {
     const { data } = await api.post('/auth/register', payload);
-    return startSession(data);
+    const signedIn = startSession(data);
+    setUser(signedIn);
+    return signedIn;
   };
 
   const logout = () => {

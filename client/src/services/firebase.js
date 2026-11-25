@@ -5,6 +5,7 @@ import { getStorage, connectStorageEmulator } from 'firebase/storage';
 import {
   getAuth,
   GoogleAuthProvider,
+  onAuthStateChanged,
   signInWithPopup,
   signOut as firebaseSignOut,
 } from 'firebase/auth';
@@ -60,6 +61,11 @@ export async function signInWithGoogleAccount() {
 
 export async function signOutOfFirebase() {
   await firebaseSignOut(auth);
+}
+
+/** Notifies when the Firebase Authentication session is restored or cleared. */
+export function watchAuthState(callback) {
+  return onAuthStateChanged(auth, callback);
 }
 
 // Analytics is unavailable in some browsers/embedded previews, so initialization

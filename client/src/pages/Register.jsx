@@ -3,13 +3,15 @@ import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, UserPlus } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
-import { roleHome } from '../utils/helpers';
+import GoogleIcon from '../components/ui/GoogleIcon';
+import { roleHome, googleAuthErrorMessage } from '../utils/helpers';
 
 export default function Register() {
-  const { user, register } = useAuth();
+  const { user, register, loginWithGoogle } = useAuth();
   const navigate = useNavigate();
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
   const [form, setForm] = useState({ name: '', email: '', phone: '', municipality: '', ward: '', password: '', confirm: '' });
 
   if (user) return <Navigate to={roleHome(user.role)} replace />;
@@ -29,6 +31,17 @@ export default function Register() {
     } finally { setLoading(false); }
   };
 
+  const googleSubmit = async () => {
+    setGoogleLoading(true);
+    try {
+      const u = await loginWithGoogle();
+      toast.success('Account ready with Google');
+      navigate(roleHome(u.role), { replace: true });
+    } catch (err) {
+      toast.error(googleAuthErrorMessage(err));
+    } finally { setGoogleLoading(false); }
+  };
+
   return (
     <div className="min-h-screen grid lg:grid-cols-2 bg-slate-50 dark:bg-carbon-950">
       <div className="hidden lg:flex flex-col justify-between bg-navy-900 text-white p-12 relative overflow-hidden">
@@ -45,7 +58,17 @@ export default function Register() {
           <Link to="/" className="lg:hidden flex items-center gap-2 mb-8"><div className="h-9 w-9 rounded-xl bg-navy-700 text-white flex items-center justify-center font-bold">CT</div><span className="font-bold text-xl text-navy-800 dark:text-white">CivicTrack</span></Link>
           <h2 className="text-3xl font-bold text-navy-900 dark:text-white">Create citizen account</h2>
           <p className="mt-2 text-slate-500 dark:text-slate-400">Only citizen self-registration is available. Authority accounts are provisioned by administrators.</p>
-          <form onSubmit={submit} className="mt-8 space-y-4">
+          <button type="button" onClick={googleSubmit} disabled={googleLoading || loading}
+            className="mt-8 flex w-full items-center justify-center gap-3 rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60 dark:border-carbon-600 dark:bg-carbon-800 dark:text-white dark:hover:bg-carbon-700">
+            <GoogleIcon />
+            {googleLoading ? 'Opening Google…' : 'Sign up with Google'}
+          </button>
+          <div className="my-5 flex items-center gap-3 text-[11px] font-medium uppercase tracking-wider text-slate-400">
+            <span className="h-px flex-1 bg-slate-200 dark:bg-carbon-700" />
+            or create an email account
+            <span className="h-px flex-1 bg-slate-200 dark:bg-carbon-700" />
+          </div>
+          <form onSubmit={submit} className="space-y-4">
             <div><label className="label">Full name</label><input className="input" required value={form.name} onChange={set('name')} placeholder="Your name" /></div>
             <div><label className="label">Email</label><input className="input" type="email" required value={form.email} onChange={set('email')} placeholder="you@example.com" /></div>
             <div className="grid grid-cols-2 gap-4">

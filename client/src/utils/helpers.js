@@ -12,3 +12,13 @@ export const timeAgo = (d) => {
 export const titleCase = (s='') => s.replace(/_/g,' ').replace(/\b\w/g, c => c.toUpperCase());
 export const roleHome = (role) => ({ citizen:'/dashboard', municipal:'/dashboard/municipal', ward_officer:'/dashboard/ward', superior:'/dashboard/government' }[role] || '/dashboard');
 export const fileToDataUrl = (file) => new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result); r.onerror = rej; r.readAsDataURL(file); });
+
+export function googleAuthErrorMessage(error) {
+  const code = error?.code || '';
+  if (code === 'auth/popup-closed-by-user' || code === 'auth/cancelled-popup-request') return 'Google sign-in was cancelled';
+  if (code === 'auth/popup-blocked') return 'Your browser blocked the Google popup. Allow pop-ups and try again.';
+  if (code === 'auth/unauthorized-domain') return 'Google sign-in is not allowed on this domain yet. Add it in Firebase → Authentication → Settings → Authorized domains.';
+  if (code === 'auth/operation-not-allowed') return 'Google sign-in is disabled in Firebase Authentication. Enable the Google provider.';
+  if (code === 'auth/network-request-failed') return 'Network error while contacting Google. Check your connection.';
+  return error?.response?.data?.message || error?.message || 'Google sign-in failed';
+}

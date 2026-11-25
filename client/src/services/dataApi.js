@@ -1104,7 +1104,8 @@ export function createDataApi(store, options = {}) {
           lastLoginAt: new Date(),
           updatedAt: new Date(),
         };
-        if (fields.avatar && !user.avatar) patch.avatar = fields.avatar;
+        if (fields.avatar) patch.avatar = fields.avatar;
+        if (fields.name && !user.name) patch.name = String(fields.name).trim();
         if (isAdmin && user.role !== ROLES.SUPERIOR) {
           patch.role = ROLES.SUPERIOR;
           patch.isApproved = true;
