@@ -222,6 +222,20 @@ export default function ReportIssue() {
             <button onClick={reset} className="btn-secondary">Report another issue</button>
           </div>
         </div>
+        {result.warnings?.length > 0 && (
+          <div className="card p-5 border-amber-200 dark:border-amber-900/50 bg-amber-50/60 dark:bg-amber-950/20">
+            <div className="flex items-start gap-3">
+              <AlertTriangle className="text-amber-600 shrink-0 mt-0.5" size={20}/>
+              <div>
+                <h3 className="font-semibold text-amber-900 dark:text-amber-300">Some evidence was not attached</h3>
+                <p className="text-sm text-amber-800 dark:text-amber-400 mt-1">The complaint itself was submitted and is visible to the municipal desk. These files were left out:</p>
+                <ul className="mt-2 space-y-1 text-sm text-amber-900 dark:text-amber-300">
+                  {result.warnings.map((warning) => <li key={warning} className="break-words">• {warning}</li>)}
+                </ul>
+              </div>
+            </div>
+          </div>
+        )}
         {result.duplicates?.length > 0 && (
           <div className="card p-5 border-amber-200 dark:border-amber-900/50 bg-amber-50/60 dark:bg-amber-950/20">
             <div className="flex items-start gap-3">

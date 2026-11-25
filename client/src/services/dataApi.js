@@ -48,6 +48,11 @@ const DEPARTMENTS = [
 const LOCATION_SOURCES = ['gps', 'map', 'address'];
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const MAX_MEDIA_FILES = 6;
+// Evidence is kept inside the complaint document: this project has no Firebase
+// Storage bucket and a Firestore document is capped at ~1 MiB, so photos are
+// downscaled until they fit these budgets.
+const INLINE_EVIDENCE_BUDGET = 600 * 1024;
+const INLINE_EVIDENCE_FILE_MAX = 150 * 1024;
 
 /** The single administrator account provisioned into Firebase. */
 export const ADMIN_ACCOUNT = {
@@ -358,10 +363,62 @@ function fileToDataUrl(file) {
   });
 }
 
-function safeFileName(name) {
-  return String(name || 'evidence')
-    .replace(/[^a-zA-Z0-9._-]/g, '-')
-    .slice(-80);
+/** Bytes a base64 data URL adds to a Firestore document. */
+function dataUrlBytes(dataUrl) {
+  const base64 = String(dataUrl || '').split(',')[1] || '';
+  return Math.ceil((base64.length * 3) / 4);
+}
+
+function loadImage(file) {
+  return new Promise((resolve, reject) => {
+    if (typeof document === 'undefined' || typeof Image === 'undefined') {
+      reject(new Error('Image decoding is not available'));
+      return;
+    }
+    const objectUrl = URL.createObjectURL(file);
+    const image = new Image();
+    image.onload = () => {
+      URL.revokeObjectURL(objectUrl);
+      resolve(image);
+    };
+    image.onerror = () => {
+      URL.revokeObjectURL(objectUrl);
+      reject(new Error('Image could not be decoded'));
+    };
+    image.src = objectUrl;
+  });
+}
+
+/** Downscales a photo until its data URL fits inside `maxBytes`. */
+async function compressImageToDataUrl(file, maxBytes) {
+  try {
+    const image = await loadImage(file);
+    let maxDimension = 1400;
+    let quality = 0.82;
+    let dataUrl = '';
+    for (let attempt = 0; attempt < 9; attempt += 1) {
+      const scale = Math.min(1, maxDimension / Math.max(image.width, image.height));
+      const width = Math.max(1, Math.round(image.width * scale));
+      const height = Math.max(1, Math.round(image.height * scale));
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      canvas.getContext('2d').drawImage(image, 0, 0, width, height);
+      dataUrl = canvas.toDataURL('image/jpeg', quality);
+      if (dataUrlBytes(dataUrl) <= maxBytes) return dataUrl;
+      if (quality > 0.5) quality = Math.max(0.5, quality - 0.12);
+      else maxDimension = Math.max(320, Math.round(maxDimension * 0.75));
+    }
+    return dataUrlBytes(dataUrl) <= maxBytes ? dataUrl : '';
+  } catch {
+    // Canvas can be unavailable (older browsers); keep originals that already fit.
+    try {
+      const raw = await fileToDataUrl(file);
+      return dataUrlBytes(raw) <= maxBytes ? raw : '';
+    } catch {
+      return '';
+    }
+  }
 }
 
 /* ------------------------------------------------------------------ seeding */
@@ -835,31 +892,30 @@ export function createDataApi(store, options = {}) {
 
   async function storeMedia(files, rawMeta, fallback) {
     const media = [];
+    const skipped = [];
     const metaList = parseMediaMeta(rawMeta);
+    let usedBytes = 0;
     let index = 0;
     for (const file of files) {
       const meta = metaList[index++] || {};
-      const type = String(file.type || '').startsWith('video/') ? 'video' : 'image';
+      const label = file.name || `evidence-${index}`;
       const latitude = meta.latitude ?? fallback.latitude;
       const longitude = meta.longitude ?? fallback.longitude;
-      const path = `evidence/${fallback.userId}/${Date.now()}-${randomHex(4)}-${safeFileName(file.name)}`;
 
-      let url = '';
-      let publicId = '';
-      try {
-        url = await store.uploadFile(path, file);
-        publicId = path;
-      } catch {
-        // Without Storage rules, small photos still reach Firestore as data URLs.
-        if (type === 'image' && Number(file.size) <= 900 * 1024) {
-          url = await fileToDataUrl(file);
-        } else {
-          throw httpError(
-            502,
-            'Evidence could not be saved to Firebase Storage. Check the Storage rules for this project.'
-          );
-        }
+      // Videos cannot live inside a Firestore document, so they are skipped with
+      // a warning instead of blocking the whole complaint.
+      if (String(file.type || '').startsWith('video/')) {
+        skipped.push(`${label} — video evidence needs Firebase Storage, which is not enabled`);
+        continue;
       }
+
+      const budget = Math.max(50 * 1024, Math.min(INLINE_EVIDENCE_FILE_MAX, INLINE_EVIDENCE_BUDGET - usedBytes));
+      const url = await compressImageToDataUrl(file, budget);
+      if (!url) {
+        skipped.push(`${label} — photo is too large to store with this complaint`);
+        continue;
+      }
+      usedBytes += dataUrlBytes(url);
 
       const geo = { latitude, longitude };
       if (meta.accuracy != null) geo.accuracy = meta.accuracy;
@@ -868,14 +924,14 @@ export function createDataApi(store, options = {}) {
 
       media.push({
         url,
-        publicId,
-        type,
-        filename: file.name || `evidence-${index}`,
-        size: Number(file.size) || 0,
+        publicId: '',
+        type: 'image',
+        filename: label,
+        size: dataUrlBytes(url),
         ...geo,
       });
     }
-    return media;
+    return { media, skipped };
   }
 
   function scopedComplaintFilter(user) {
@@ -1184,7 +1240,7 @@ export function createDataApi(store, options = {}) {
       const address = String(fields.address || '').trim();
       const category = String(fields.category || 'Other');
 
-      const media = await storeMedia(files, fields.mediaMeta, {
+      const { media, skipped } = await storeMedia(files, fields.mediaMeta, {
         latitude: lat,
         longitude: lng,
         address,
@@ -1271,6 +1327,7 @@ export function createDataApi(store, options = {}) {
       return {
         complaint,
         duplicates,
+        warnings: skipped,
         message: duplicates.length
           ? 'Complaint submitted. Similar nearby complaints were found and flagged for review.'
           : 'Complaint submitted successfully.',
@@ -1505,7 +1562,7 @@ export function createDataApi(store, options = {}) {
       }
 
       const [complaintLng, complaintLat] = complaint.location?.coordinates || [];
-      const proofMedia = await storeMedia(proofFiles, change.mediaMeta, {
+      const { media: proofMedia } = await storeMedia(proofFiles, change.mediaMeta, {
         latitude: complaintLat,
         longitude: complaintLng,
         address: complaint.location?.address || '',
