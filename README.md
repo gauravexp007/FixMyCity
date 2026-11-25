@@ -38,11 +38,27 @@ In the Firebase console for `fixmycity-51576`:
 3. Publish Firestore/Storage rules that allow the app to read and write the
    `users`, `complaints`, `notifications`, `counters` collections and the
    `evidence/` storage prefix. This build has no server-side session, so the
-   rules are what protect the data — tighten them before real-world use, or move
-   sign-in to Firebase Authentication.
+   rules are what protect the data — tighten them before real-world use, e.g.
+   by requiring `request.auth != null` once everyone signs in with Google.
 
 The first load provisions the administrator and, on an empty database, clearly
 labelled demo role accounts plus `[Sample]` complaints.
+
+## Sign-in
+
+Two methods are supported:
+
+- **Continue with Google** — Firebase Authentication (Google provider) opens the
+  account chooser, then the Google profile is stored in the Firestore `users`
+  collection (`firebaseUid`, `authProvider: "google"`, avatar, last login). New
+  Google accounts become citizens; the administrator email keeps the superior
+  role.
+- **Email and password** — the form checks the email against Firestore as before.
+
+Enable **Google** under Firebase Console → Authentication → Sign-in method, and
+make sure the site's domain is listed under Authentication → Settings →
+Authorized domains (Firebase Hosting domains are added automatically; preview or
+custom domains must be added by hand).
 
 ## Administrator
 

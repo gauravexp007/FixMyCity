@@ -2,6 +2,12 @@ import { initializeApp, getApps, getApp } from 'firebase/app';
 import { getAnalytics, isSupported } from 'firebase/analytics';
 import { getFirestore, connectFirestoreEmulator } from 'firebase/firestore';
 import { getStorage, connectStorageEmulator } from 'firebase/storage';
+import {
+  getAuth,
+  GoogleAuthProvider,
+  signInWithPopup,
+  signOut as firebaseSignOut,
+} from 'firebase/auth';
 
 // Firebase web config is public by design (it only identifies the project).
 // Values can be overridden per environment with VITE_FIREBASE_* variables.
@@ -20,9 +26,11 @@ const firebaseConfig = {
 // Reuse the existing app during Vite hot reloads instead of initializing twice.
 export const firebaseApp = getApps().length ? getApp() : initializeApp(firebaseConfig);
 
-// The database is Firebase Firestore; there is no application server.
+// Everything lives in Firebase: Authentication for Google sign-in, Firestore
+// for data and Storage for evidence. There is no application server.
 export const db = getFirestore(firebaseApp);
 export const storage = getStorage(firebaseApp);
+export const auth = getAuth(firebaseApp);
 
 // Local development can point at the Firebase emulator instead of the live
 // project. The flag is kept on globalThis because Vite re-evaluates modules on
@@ -40,6 +48,18 @@ if (env.VITE_FIRESTORE_EMULATOR_HOST && !globalThis[EMULATOR_FLAG]) {
   } catch {
     /* an emulator connection is a development convenience only */
   }
+}
+
+/** Opens the Google account chooser and returns the signed-in Firebase user. */
+export async function signInWithGoogleAccount() {
+  const provider = new GoogleAuthProvider();
+  provider.setCustomParameters({ prompt: 'select_account' });
+  const credential = await signInWithPopup(auth, provider);
+  return credential.user;
+}
+
+export async function signOutOfFirebase() {
+  await firebaseSignOut(auth);
 }
 
 // Analytics is unavailable in some browsers/embedded previews, so initialization

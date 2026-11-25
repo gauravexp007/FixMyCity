@@ -397,11 +397,14 @@ async function createUserRecord(store, data) {
  * Seed accounts are written to a fixed document id so two tabs booting at the
  * same time converge on one record instead of creating duplicate accounts.
  */
-async function writeSeedUser(store, key, data) {
-  const payload = userPayload({ ...data, ...(await hashNewPassword(data.password)) });
-  const id = `seed-${key}`;
+async function createUserWithId(store, id, data) {
+  const payload = userPayload({ ...data, ...(await hashNewPassword(data.password || randomHex(24))) });
   await store.set('users', id, payload, { merge: false });
   return { _id: id, ...payload };
+}
+
+async function writeSeedUser(store, key, data) {
+  return createUserWithId(store, `seed-${key}`, data);
 }
 
 /** Removes extra copies of a seed account left by an earlier concurrent boot. */
@@ -1065,6 +1068,55 @@ export function createDataApi(store, options = {}) {
         role: ROLES.CITIZEN,
         isApproved: true,
       });
+      const token = makeSession(user);
+      session.setItem(SESSION_KEY, token);
+      return { token, user: safeUser(user) };
+    }
+
+    if (method === 'POST' && path === '/auth/google') {
+      await ready();
+      const uid = String(fields.uid || '').trim();
+      const email = String(fields.email || '').trim().toLowerCase();
+      if (!uid || !email) throw httpError(400, 'Google account details are missing');
+
+      // The administrator email always resolves to the administrator record,
+      // whichever way it signs in; everyone else is a citizen until an
+      // administrator provisions another role.
+      const isAdmin = email === ADMIN_ACCOUNT.email.toLowerCase();
+      let user = await store.findBy('users', 'firebaseUid', uid);
+      if (!user) user = await findUserByEmail(email);
+
+      if (!user) {
+        user = await createUserWithId(store, `google-${uid}`, {
+          name: String(fields.name || '').trim() || email.split('@')[0],
+          email,
+          avatar: String(fields.avatar || ''),
+          role: isAdmin ? ROLES.SUPERIOR : ROLES.CITIZEN,
+          firebaseUid: uid,
+          authProvider: 'google',
+          isApproved: true,
+          isActive: true,
+        });
+      } else {
+        const patch = {
+          firebaseUid: uid,
+          authProvider: 'google',
+          lastLoginAt: new Date(),
+          updatedAt: new Date(),
+        };
+        if (fields.avatar && !user.avatar) patch.avatar = fields.avatar;
+        if (isAdmin && user.role !== ROLES.SUPERIOR) {
+          patch.role = ROLES.SUPERIOR;
+          patch.isApproved = true;
+          patch.isActive = true;
+        }
+        await store.set('users', user._id, patch);
+        user = { ...user, ...patch };
+      }
+
+      if (user.isActive === false) throw httpError(403, 'Account is disabled');
+      if (user.isApproved === false) throw httpError(403, 'Account pending administrator approval');
+
       const token = makeSession(user);
       session.setItem(SESSION_KEY, token);
       return { token, user: safeUser(user) };
