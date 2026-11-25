@@ -4,17 +4,17 @@
 
 @layer base {
   html { scroll-behavior: smooth; }
-  body { @apply text-slate-800 dark:text-slate-100 antialiased; }
+  body { @apply bg-slate-50 text-slate-800 antialiased dark:bg-carbon-950 dark:text-slate-100; }
   ::selection { @apply bg-tealbrand-200 text-navy-900; }
 }
 
 @layer components {
-  .glass { @apply bg-white/80 dark:bg-navy-900/70 backdrop-blur-xl border border-white/20 dark:border-white/5; }
-  .card { @apply bg-white dark:bg-navy-900 rounded-2xl border border-slate-200/70 dark:border-navy-700/60 shadow-card; }
+  .glass { @apply bg-white/80 dark:bg-carbon-900/70 backdrop-blur-xl border border-white/20 dark:border-white/5; }
+  .card { @apply bg-white dark:bg-carbon-900 rounded-2xl border border-slate-200/70 dark:border-carbon-700/70 shadow-card; }
   .btn-primary { @apply inline-flex items-center justify-center gap-2 rounded-xl bg-navy-700 px-4 py-2.5 text-sm font-semibold text-white hover:bg-navy-600 active:scale-[0.98] transition-all disabled:opacity-60 disabled:pointer-events-none; }
-  .btn-secondary { @apply inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 dark:border-navy-600 bg-white dark:bg-navy-800 px-4 py-2.5 text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-navy-700 transition-all disabled:opacity-60; }
+  .btn-secondary { @apply inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 dark:border-carbon-600 bg-white dark:bg-carbon-800 px-4 py-2.5 text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-carbon-700 transition-all disabled:opacity-60; }
   .btn-accent { @apply inline-flex items-center justify-center gap-2 rounded-xl bg-tealbrand-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-tealbrand-500 active:scale-[0.98] transition-all disabled:opacity-60; }
-  .input { @apply w-full rounded-xl border border-slate-200 dark:border-navy-600 bg-white dark:bg-navy-800 px-4 py-2.5 text-sm text-slate-800 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-tealbrand-500/40 focus:border-tealbrand-500 transition; }
+  .input { @apply w-full rounded-xl border border-slate-200 dark:border-carbon-600 bg-white dark:bg-carbon-800 px-4 py-2.5 text-sm text-slate-800 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-tealbrand-500/40 focus:border-tealbrand-500 transition; }
   .label { @apply block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5; }
   .badge { @apply inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold; }
 }

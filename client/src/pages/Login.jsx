@@ -29,7 +29,7 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen grid lg:grid-cols-2 bg-slate-50 dark:bg-navy-950">
+    <div className="min-h-screen grid lg:grid-cols-2 bg-slate-50 dark:bg-carbon-950">
       <div className="hidden lg:flex flex-col justify-between bg-navy-900 text-white p-12 relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(5,200,165,0.25),_transparent_45%)]" />
         <Link to="/" className="flex items-center gap-3 relative"><div className="h-11 w-11 rounded-xl bg-tealbrand-600 flex items-center justify-center font-bold">CT</div><span className="text-2xl font-bold">CivicTrack</span></Link>

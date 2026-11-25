@@ -80,7 +80,7 @@ export default function NotificationsPage() {
       <div className="flex gap-2">
         {[{ k: 'all', label: 'All' }, { k: 'unread', label: `Unread (${data.unread})` }].map(t => (
           <button key={t.k} onClick={() => setFilter(t.k)}
-            className={`rounded-lg px-3.5 py-2 text-sm font-medium transition ${filter === t.k ? 'bg-navy-700 text-white' : 'bg-white dark:bg-navy-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-navy-700'}`}>
+            className={`rounded-lg px-3.5 py-2 text-sm font-medium transition ${filter === t.k ? 'bg-navy-700 text-white' : 'bg-white dark:bg-carbon-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-carbon-700'}`}>
             {t.label}
           </button>
         ))}
@@ -89,7 +89,7 @@ export default function NotificationsPage() {
       {list.length === 0 ? (
         <EmptyState icon={Inbox} title={filter === 'unread' ? 'No unread notifications' : 'No notifications yet'} description="Status updates on your complaints, assignments and escalation alerts will appear here." />
       ) : (
-        <div className="card divide-y divide-slate-100 dark:divide-navy-800 overflow-hidden">
+        <div className="card divide-y divide-slate-100 dark:divide-carbon-800 overflow-hidden">
           {list.map(n => (
             <div key={n._id} className={`flex gap-4 p-4 sm:p-5 transition ${n.isRead ? '' : 'bg-tealbrand-50/40 dark:bg-tealbrand-900/10'}`}>
               <div className={`h-10 w-10 rounded-xl flex items-center justify-center shrink-0 ${TONE[n.type] || TONE.info}`}>

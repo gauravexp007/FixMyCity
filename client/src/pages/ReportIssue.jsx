@@ -206,7 +206,7 @@ export default function ReportIssue() {
             Saved on the server and delivered to the {c.location?.municipality || 'municipal'} municipal desk
             {c.location?.ward ? ` and ${c.location.ward} ward officers` : ''}.
           </p>
-          <div className="mt-5 inline-flex items-center gap-2 rounded-xl bg-slate-50 dark:bg-navy-800 px-4 py-3">
+          <div className="mt-5 inline-flex items-center gap-2 rounded-xl bg-slate-50 dark:bg-carbon-800 px-4 py-3">
             <span className="text-sm text-slate-500">Complaint ID</span>
             <span className="font-mono font-bold text-navy-800 dark:text-white">{c.complaintId}</span>
           </div>
@@ -231,7 +231,7 @@ export default function ReportIssue() {
                 <p className="text-sm text-amber-800 dark:text-amber-400 mt-1">{result.message}</p>
                 <div className="mt-3 space-y-2">
                   {result.duplicates.map(d => (
-                    <Link key={d._id} to={`/complaints/${d._id}`} className="block rounded-lg bg-white/70 dark:bg-navy-900/60 px-3 py-2 text-sm hover:bg-white transition">
+                    <Link key={d._id} to={`/complaints/${d._id}`} className="block rounded-lg bg-white/70 dark:bg-carbon-900/60 px-3 py-2 text-sm hover:bg-white transition">
                       <span className="font-mono text-xs text-slate-500">{d.complaintId}</span> · {d.title} · <span className="font-medium">{d.status}</span>
                     </Link>
                   ))}
@@ -265,13 +265,13 @@ export default function ReportIssue() {
           <li key={s.n} className="flex items-center gap-2">
             <a href={s.href} className={`flex items-center gap-2 rounded-xl border px-3 py-1.5 transition ${s.done
               ? 'border-tealbrand-200 bg-tealbrand-50 text-tealbrand-800 dark:border-tealbrand-900/60 dark:bg-tealbrand-900/15 dark:text-tealbrand-300'
-              : 'border-slate-200 bg-white text-slate-500 dark:border-navy-700 dark:bg-navy-900 dark:text-slate-400'}`}>
-              <span className={`flex h-5 w-5 items-center justify-center rounded-full text-[11px] font-bold ${s.done ? 'bg-tealbrand-600 text-white' : 'bg-slate-200 text-slate-600 dark:bg-navy-700 dark:text-slate-300'}`}>
+              : 'border-slate-200 bg-white text-slate-500 dark:border-carbon-700 dark:bg-carbon-900 dark:text-slate-400'}`}>
+              <span className={`flex h-5 w-5 items-center justify-center rounded-full text-[11px] font-bold ${s.done ? 'bg-tealbrand-600 text-white' : 'bg-slate-200 text-slate-600 dark:bg-carbon-700 dark:text-slate-300'}`}>
                 {s.done ? '✓' : s.n}
               </span>
               {s.label}
             </a>
-            {i < steps.length - 1 && <span className="h-px w-6 bg-slate-200 dark:bg-navy-700" />}
+            {i < steps.length - 1 && <span className="h-px w-6 bg-slate-200 dark:bg-carbon-700" />}
           </li>
         ))}
       </ol>
@@ -291,7 +291,7 @@ export default function ReportIssue() {
           <section id="location" ref={locationRef} className={`card p-5 lg:p-6 scroll-mt-24 transition ${locationMissing ? 'ring-2 ring-rose-300 dark:ring-rose-800' : ''}`}>
             <div className="flex flex-wrap items-center gap-2 mb-4">
               <span className="h-7 w-7 rounded-lg bg-navy-700 text-white text-xs font-bold flex items-center justify-center">2</span>
-              <h2 className="font-semibold text-navy-800 dark:text-white">Issue location</h2>
+              <h2 className="text-lg font-semibold text-navy-800 dark:text-white">Issue location</h2>
               <span className={`badge ${coords
                 ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-300'
                 : 'bg-amber-50 text-amber-700 dark:bg-amber-900/20 dark:text-amber-300'}`}>
@@ -308,30 +308,39 @@ export default function ReportIssue() {
               </button>
             </div>
 
-            <div className="mb-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs">
+            <div className={`mb-4 rounded-2xl border p-4 ${coords
+              ? 'border-slate-200/80 bg-slate-50/80 dark:border-carbon-700 dark:bg-carbon-800/50'
+              : 'border-dashed border-slate-300 bg-slate-50/60 dark:border-carbon-600 dark:bg-carbon-800/30'}`}>
               {coords ? (
-                <>
-                  <span className="flex items-center gap-1 font-mono text-slate-600 dark:text-slate-300">
-                    <LocateFixed size={14}/> {coords[0].toFixed(6)}, {coords[1].toFixed(6)}
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-tealbrand-600/10 text-tealbrand-700 dark:bg-tealbrand-500/15 dark:text-tealbrand-300">
+                    <LocateFixed size={20}/>
                   </span>
-                  {geoAccuracy && <span className="text-slate-500 dark:text-slate-400">GPS accuracy ±{geoAccuracy} m</span>}
-                  <span className="text-slate-500 dark:text-slate-400">{SOURCE_LABEL[locationSource] || 'Location set'}</span>
+                  <div className="min-w-0 flex-1">
+                    <p className="font-mono text-lg font-semibold tracking-tight text-slate-900 dark:text-white">
+                      {coords[0].toFixed(6)}, {coords[1].toFixed(6)}
+                    </p>
+                    <p className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-slate-600 dark:text-slate-300">
+                      <span>{SOURCE_LABEL[locationSource] || 'Location set'}</span>
+                      {geoAccuracy && <span>GPS accuracy ±{geoAccuracy} m</span>}
+                    </p>
+                  </div>
                   <a href={`https://www.google.com/maps?q=${coords[0]},${coords[1]}`} target="_blank" rel="noreferrer"
-                    className="flex items-center gap-1 font-medium text-navy-700 hover:underline dark:text-tealbrand-300">
-                    <ExternalLink size={13}/> Google Maps
+                    className="inline-flex items-center gap-1.5 self-start rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-navy-700 transition hover:bg-slate-100 dark:border-carbon-600 dark:bg-carbon-800 dark:text-tealbrand-300 dark:hover:bg-carbon-700 sm:self-center">
+                    <ExternalLink size={15}/> Google Maps
                   </a>
-                </>
+                </div>
               ) : (
-                <span className="flex items-center gap-1 text-slate-500 dark:text-slate-400">
-                  <MousePointerClick size={14}/> Tap anywhere on the map to drop the pin, or press “Match my address”.
-                </span>
+                <p className="flex items-start gap-2 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
+                  <MousePointerClick size={16} className="mt-0.5 shrink-0"/> Tap anywhere on the map to drop the pin, or press “Match my address”.
+                </p>
               )}
             </div>
 
             {locError && (
               <div className="mb-3 flex items-start gap-2 rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900/50 p-3">
                 <AlertTriangle size={17} className="text-amber-600 shrink-0 mt-0.5"/>
-                <p className="text-xs text-amber-800 dark:text-amber-300">{locError}</p>
+                <p className="text-sm text-amber-800 dark:text-amber-300">{locError}</p>
               </div>
             )}
 
@@ -345,8 +354,8 @@ export default function ReportIssue() {
                 <div><label className="label">Ward</label><input className="input" value={form.ward} onChange={set('ward')} placeholder="Ward" /></div>
               </div>
             </div>
-            <p className="mt-2 flex items-center gap-1.5 text-[11px] text-slate-500 dark:text-slate-400">
-              <Building2 size={12}/> Municipality and ward decide which municipal and ward desks receive this complaint.
+            <p className="mt-3 flex items-start gap-1.5 text-sm text-slate-500 dark:text-slate-400">
+              <Building2 size={15} className="mt-0.5 shrink-0"/> Municipality and ward decide which municipal and ward desks receive this complaint.
             </p>
           </section>
 
@@ -379,14 +388,14 @@ export default function ReportIssue() {
               ].map((row) => (
                 <li key={row.label} className="flex items-center justify-between gap-2">
                   <span className="flex items-center gap-2 text-slate-600 dark:text-slate-300">
-                    {row.ok ? <CheckCircle2 size={15} className="text-emerald-500"/> : <span className="h-[15px] w-[15px] rounded-full border border-slate-300 dark:border-navy-600" />}
+                    {row.ok ? <CheckCircle2 size={15} className="text-emerald-500"/> : <span className="h-[15px] w-[15px] rounded-full border border-slate-300 dark:border-carbon-600" />}
                     {row.label}
                   </span>
                   <span className={`text-xs ${row.ok ? 'text-slate-500 dark:text-slate-400' : 'font-medium text-amber-600 dark:text-amber-400'}`}>{row.value}</span>
                 </li>
               ))}
             </ul>
-            <dl className="mt-4 space-y-2 border-t border-slate-100 pt-4 text-sm dark:border-navy-800">
+            <dl className="mt-4 space-y-2 border-t border-slate-100 pt-4 text-sm dark:border-carbon-800">
               <div className="flex items-center justify-between"><dt className="text-slate-500">Category</dt><dd className="font-medium text-navy-800 dark:text-white">{form.category}</dd></div>
               <div className="flex items-center justify-between"><dt className="text-slate-500">Severity</dt><dd className="font-medium text-navy-800 dark:text-white">{form.severity}</dd></div>
               <div className="flex items-center justify-between"><dt className="text-slate-500">Ward</dt><dd className="font-medium text-navy-800 dark:text-white">{form.ward || '—'}</dd></div>

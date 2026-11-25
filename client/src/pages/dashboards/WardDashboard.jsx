@@ -38,7 +38,7 @@ export default function WardDashboard() {
               <p className="text-sm text-slate-500 dark:text-slate-400">Resolution rate</p>
               <p className="text-4xl font-extrabold text-tealbrand-600 mt-1">{data?.stats.total ? Math.round((data.stats.resolved / data.stats.total) * 100) : 0}%</p>
               <p className="text-sm text-slate-500 mt-2">{data?.stats.resolved} of {data?.stats.total} resolved</p>
-              <div className="mt-4 h-2 rounded-full bg-slate-100 dark:bg-navy-800 overflow-hidden">
+              <div className="mt-4 h-2 rounded-full bg-slate-100 dark:bg-carbon-800 overflow-hidden">
                 <div className="h-full bg-gradient-to-r from-tealbrand-400 to-tealbrand-600" style={{ width: `${data?.stats.total ? (data.stats.resolved / data.stats.total) * 100 : 0}%` }} />
               </div>
               <p className="mt-4 text-xs text-slate-500">Average resolution: {data?.stats.avgResolutionHours || 0} hours</p>

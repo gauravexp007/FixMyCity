@@ -66,12 +66,12 @@ export default function ComplaintsList() {
 
       <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1">
         <button onClick={() => { setFilters(f => ({ ...f, category: '' })); setPage(1); }}
-          className={`whitespace-nowrap rounded-full border px-3.5 py-1.5 text-xs font-semibold transition ${!filters.category ? 'border-navy-700 bg-navy-700 text-white' : 'border-slate-200 bg-white text-slate-600 hover:border-tealbrand-400 dark:border-navy-700 dark:bg-navy-900 dark:text-slate-300'}`}>
+          className={`whitespace-nowrap rounded-full border px-3.5 py-1.5 text-xs font-semibold transition ${!filters.category ? 'border-navy-700 bg-navy-700 text-white' : 'border-slate-200 bg-white text-slate-600 hover:border-tealbrand-400 dark:border-carbon-700 dark:bg-carbon-900 dark:text-slate-300'}`}>
           All categories
         </button>
         {CATEGORIES.map(cat => (
           <button key={cat} onClick={() => { setFilters(f => ({ ...f, category: cat })); setPage(1); }}
-            className={`whitespace-nowrap rounded-full border px-3.5 py-1.5 text-xs font-semibold transition ${filters.category === cat ? 'border-navy-700 bg-navy-700 text-white' : 'border-slate-200 bg-white text-slate-600 hover:border-tealbrand-400 dark:border-navy-700 dark:bg-navy-900 dark:text-slate-300'}`}>
+            className={`whitespace-nowrap rounded-full border px-3.5 py-1.5 text-xs font-semibold transition ${filters.category === cat ? 'border-navy-700 bg-navy-700 text-white' : 'border-slate-200 bg-white text-slate-600 hover:border-tealbrand-400 dark:border-carbon-700 dark:bg-carbon-900 dark:text-slate-300'}`}>
             {cat}
           </button>
         ))}

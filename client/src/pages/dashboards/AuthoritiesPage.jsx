@@ -80,7 +80,7 @@ export default function AuthoritiesPage() {
         <div className="card overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="bg-slate-50 dark:bg-navy-800/60 text-left text-xs uppercase text-slate-500">
+              <thead className="bg-slate-50 dark:bg-carbon-800/60 text-left text-xs uppercase text-slate-500">
                 <tr>
                   <th className="px-4 py-3 font-medium">Name</th>
                   <th className="px-4 py-3 font-medium">Role</th>
@@ -91,11 +91,11 @@ export default function AuthoritiesPage() {
                   <th className="px-4 py-3 font-medium text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-navy-800">
+              <tbody className="divide-y divide-slate-100 dark:divide-carbon-800">
                 {users.map(u => (
-                  <tr key={u._id} className="hover:bg-slate-50 dark:hover:bg-navy-800/40">
+                  <tr key={u._id} className="hover:bg-slate-50 dark:hover:bg-carbon-800/40">
                     <td className="px-4 py-3"><p className="font-medium text-navy-800 dark:text-white">{u.name}</p><p className="text-xs text-slate-500">{u.email}</p></td>
-                    <td className="px-4 py-3"><span className="badge bg-navy-50 text-navy-700 dark:bg-navy-800 dark:text-slate-200">{ROLE_LABELS[u.role]}</span></td>
+                    <td className="px-4 py-3"><span className="badge bg-navy-50 text-navy-700 dark:bg-carbon-800 dark:text-slate-200">{ROLE_LABELS[u.role]}</span></td>
                     <td className="px-4 py-3 text-slate-600 dark:text-slate-300">{[u.jurisdiction?.municipality, u.jurisdiction?.ward].filter(Boolean).join(' · ') || '—'}</td>
                     <td className="px-4 py-3 text-slate-600 dark:text-slate-300">{u.department || '—'}</td>
                     <td className="px-4 py-3">
@@ -106,10 +106,10 @@ export default function AuthoritiesPage() {
                     <td className="px-4 py-3 text-slate-500">{fmtDate(u.createdAt)}</td>
                     <td className="px-4 py-3 text-right">
                       <div className="flex justify-end gap-2">
-                        <button title={u.isApproved?'Revoke approval':'Approve'} onClick={()=>toggle(u,'isApproved')} className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-navy-700 text-slate-500">
+                        <button title={u.isApproved?'Revoke approval':'Approve'} onClick={()=>toggle(u,'isApproved')} className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-carbon-700 text-slate-500">
                           {u.isApproved?<XCircle size={17}/>:<CheckCircle2 size={17}/>}
                         </button>
-                        <button title={u.isActive?'Deactivate':'Activate'} onClick={()=>toggle(u,'isActive')} className={`p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-navy-700 ${u.isActive?'text-rose-500':'text-emerald-600'}`}>
+                        <button title={u.isActive?'Deactivate':'Activate'} onClick={()=>toggle(u,'isActive')} className={`p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-carbon-700 ${u.isActive?'text-rose-500':'text-emerald-600'}`}>
                           <ShieldCheck size={17}/>
                         </button>
                       </div>
@@ -128,7 +128,7 @@ export default function AuthoritiesPage() {
           <div className="relative card w-full max-w-lg max-h-[90vh] overflow-y-auto p-6">
             <div className="flex items-center justify-between mb-4">
               <div><h2 className="text-lg font-bold text-navy-800 dark:text-white">Provision Authority Account</h2><p className="text-xs text-slate-500 mt-0.5">Account is created verified and approved.</p></div>
-              <button onClick={()=>setShowModal(false)} className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-navy-800"><X size={18}/></button>
+              <button onClick={()=>setShowModal(false)} className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-carbon-800"><X size={18}/></button>
             </div>
             <form onSubmit={submit} className="space-y-4">
               <div><label className="label">Full name</label><input className="input" required value={form.name} onChange={e=>setForm({...form,name:e.target.value})}/></div>

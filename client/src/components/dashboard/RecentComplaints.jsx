@@ -13,9 +13,9 @@ export default function RecentComplaints({ items = [], title = 'Recent Complaint
       {items.length === 0 ? (
         <div className="py-10 text-center text-sm text-slate-500"><Inbox size={24} className="mx-auto mb-2 opacity-50"/>No complaints yet</div>
       ) : (
-        <div className="divide-y divide-slate-100 dark:divide-navy-800">
+        <div className="divide-y divide-slate-100 dark:divide-carbon-800">
           {items.map(c => (
-            <Link key={c._id} to={`/complaints/${c._id}`} className="flex items-start justify-between gap-3 py-3 hover:bg-slate-50 dark:hover:bg-navy-800/50 -mx-2 px-2 rounded-lg transition">
+            <Link key={c._id} to={`/complaints/${c._id}`} className="flex items-start justify-between gap-3 py-3 hover:bg-slate-50 dark:hover:bg-carbon-800/50 -mx-2 px-2 rounded-lg transition">
               <div className="min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
                   <span className="text-xs font-mono text-slate-400">{c.complaintId}</span>

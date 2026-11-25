@@ -65,7 +65,7 @@ export default function SettingsPage() {
           <h2 className="text-lg font-semibold text-navy-900 dark:text-white">{user?.name}</h2>
           <p className="text-sm text-slate-500">{user?.email}</p>
           <div className="mt-2 flex flex-wrap gap-2">
-            <span className="badge bg-navy-50 text-navy-700 dark:bg-navy-800 dark:text-slate-200 capitalize">{user?.role?.replace('_', ' ')}</span>
+            <span className="badge bg-navy-50 text-navy-700 dark:bg-carbon-800 dark:text-slate-200 capitalize">{user?.role?.replace('_', ' ')}</span>
             {user?.isApproved ? <span className="badge bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300">Verified account</span> : <span className="badge bg-amber-50 text-amber-700">Pending approval</span>}
             {user?.isSeed && <span className="badge bg-violet-50 text-violet-700">Demo account</span>}
           </div>
@@ -76,7 +76,7 @@ export default function SettingsPage() {
         <form onSubmit={saveProfile} className="card p-6 space-y-4">
           <h2 className="font-semibold text-navy-800 dark:text-white flex items-center gap-2"><User size={18} /> Personal information</h2>
           <div><label className="label">Full name</label><input className="input" value={profile.name} onChange={e => setProfile(p => ({ ...p, name: e.target.value }))} required maxLength={100} /></div>
-          <div><label className="label">Email</label><input className="input bg-slate-50 dark:bg-navy-800" value={user?.email || ''} disabled /><p className="mt-1 text-[11px] text-slate-500">Email changes require an administrator.</p></div>
+          <div><label className="label">Email</label><input className="input bg-slate-50 dark:bg-carbon-800" value={user?.email || ''} disabled /><p className="mt-1 text-[11px] text-slate-500">Email changes require an administrator.</p></div>
           <div><label className="label">Phone</label><input className="input" value={profile.phone} onChange={e => setProfile(p => ({ ...p, phone: e.target.value }))} placeholder="+91 98765 43210" /></div>
           <div><label className="label">Avatar image URL</label><input className="input" value={profile.avatar} onChange={e => setProfile(p => ({ ...p, avatar: e.target.value }))} placeholder="https://..." /></div>
           <button disabled={savingProfile} className="btn-primary w-full">{savingProfile ? <><Loader2 size={16} className="animate-spin" /> Saving...</> : <><Save size={16} /> Save changes</>}</button>
@@ -120,7 +120,7 @@ export default function SettingsPage() {
 
         <div className="card p-6">
           <h2 className="font-semibold text-navy-800 dark:text-white flex items-center gap-2 mb-4">{dark ? <Moon size={18} /> : <Sun size={18} />} Appearance</h2>
-          <div className="flex items-center justify-between rounded-xl border border-slate-200 dark:border-navy-700 p-4">
+          <div className="flex items-center justify-between rounded-xl border border-slate-200 dark:border-carbon-700 p-4">
             <div>
               <p className="text-sm font-medium text-navy-800 dark:text-white">Dark mode</p>
               <p className="text-xs text-slate-500">Switch between light and dark interface.</p>
@@ -130,7 +130,7 @@ export default function SettingsPage() {
               <span className={`absolute top-1 h-5 w-5 rounded-full bg-white shadow transition-all ${dark ? 'left-6' : 'left-1'}`} />
             </button>
           </div>
-          <div className="mt-4 rounded-xl bg-slate-50 dark:bg-navy-800 p-4">
+          <div className="mt-4 rounded-xl bg-slate-50 dark:bg-carbon-800 p-4">
             <p className="text-xs text-slate-500 dark:text-slate-400">Your theme preference is stored on this device only. Complaint data and account security are unaffected.</p>
           </div>
         </div>

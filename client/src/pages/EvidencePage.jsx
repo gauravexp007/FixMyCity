@@ -91,7 +91,7 @@ export default function EvidencePage() {
           <p>Your captures are stored against your account and marked with the coordinates printed on the image. Use <span className="font-semibold">Download</span> to keep a copy, or open the pin in Google Maps to verify where it was taken.</p>
         </div>
       ) : (
-        <div className="rounded-2xl border border-navy-200 bg-navy-50/60 p-4 text-sm text-navy-900 dark:border-navy-700 dark:bg-navy-800/50 dark:text-slate-200 flex items-start gap-2">
+        <div className="rounded-2xl border border-navy-200 bg-navy-50/60 p-4 text-sm text-navy-900 dark:border-carbon-700 dark:bg-carbon-800/50 dark:text-slate-200 flex items-start gap-2">
           <Building2 size={17} className="mt-0.5 shrink-0" />
           <p>These are the same geo-tagged captures attached to citizen complaints. The stamped coordinates and timestamp are immutable evidence you can compare with the field team's resolution proof.</p>
         </div>
@@ -107,11 +107,11 @@ export default function EvidencePage() {
       )}
 
       <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-        <div className="flex gap-1 p-1 rounded-xl bg-slate-100 dark:bg-navy-800 w-fit">
+        <div className="flex gap-1 p-1 rounded-xl bg-slate-100 dark:bg-carbon-800 w-fit">
           {FILTERS.map((f) => (
             <button key={f.key} type="button"
               onClick={() => { setType(f.key); setPage(1); }}
-              className={`rounded-lg px-3.5 py-2 text-sm font-medium transition ${type === f.key ? 'bg-white text-navy-800 shadow-sm dark:bg-navy-700 dark:text-white' : 'text-slate-500 dark:text-slate-400'}`}>
+              className={`rounded-lg px-3.5 py-2 text-sm font-medium transition ${type === f.key ? 'bg-white text-navy-800 shadow-sm dark:bg-carbon-700 dark:text-white' : 'text-slate-500 dark:text-slate-400'}`}>
               {f.label}
             </button>
           ))}
@@ -129,7 +129,7 @@ export default function EvidencePage() {
         <div className="card p-8 text-center text-sm text-rose-600">{error}</div>
       ) : items.length === 0 ? (
         <div className="card p-10 text-center">
-          <Camera size={30} className="mx-auto text-slate-300 dark:text-navy-600" />
+          <Camera size={30} className="mx-auto text-slate-300 dark:text-carbon-600" />
           <h3 className="mt-3 font-semibold text-navy-800 dark:text-white">No evidence yet</h3>
           <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
             {isCitizen
@@ -179,7 +179,7 @@ export default function EvidencePage() {
                 )}
                 <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">Captured {fmtDateTime(item.capturedAt)}</p>
 
-                <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-slate-100 dark:border-navy-800 pt-3">
+                <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-slate-100 dark:border-carbon-800 pt-3">
                   {item.latitude != null && (
                     <>
                       <a href={item.mapsUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-xs font-medium text-tealbrand-700 hover:underline dark:text-tealbrand-400">

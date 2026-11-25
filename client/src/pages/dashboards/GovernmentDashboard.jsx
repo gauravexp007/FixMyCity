@@ -35,7 +35,7 @@ export default function GovernmentDashboard() {
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div className="card p-5 flex items-center gap-4">
-              <div className="h-12 w-12 rounded-xl bg-navy-50 dark:bg-navy-800 text-navy-700 dark:text-tealbrand-400 flex items-center justify-center"><Timer size={22}/></div>
+              <div className="h-12 w-12 rounded-xl bg-navy-50 dark:bg-carbon-800 text-navy-700 dark:text-tealbrand-400 flex items-center justify-center"><Timer size={22}/></div>
               <div><p className="text-sm text-slate-500">Avg. Resolution Time</p><p className="text-2xl font-bold text-navy-800 dark:text-white">{data?.stats.avgResolutionHours || 0} hrs</p></div>
             </div>
             <div className="card p-5 flex items-center gap-4">

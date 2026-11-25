@@ -27,7 +27,7 @@ export default function LocationMap({
 }) {
   const mapCenter = useMemo(() => center || [12.9716, 77.5946], [center?.[0], center?.[1]]);
   return (
-    <div className={`rounded-2xl overflow-hidden border border-slate-200 dark:border-navy-700 ${className}`} style={{ height }}>
+    <div className={`rounded-2xl overflow-hidden border border-slate-200 dark:border-carbon-700 ${className}`} style={{ height }}>
       <MapContainer center={mapCenter} zoom={zoom} style={{ height: '100%', width: '100%' }} scrollWheelZoom={interactive}>
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'

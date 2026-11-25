@@ -97,7 +97,7 @@ export function DepartmentPerformance({ data = [] }) {
                   <span className="text-slate-700 dark:text-slate-300 font-medium">{d.department}</span>
                   <span className="text-slate-500 dark:text-slate-400 text-xs">{d.resolved}/{d.total} · {pct}%</span>
                 </div>
-                <div className="h-2 rounded-full bg-slate-100 dark:bg-navy-800 overflow-hidden">
+                <div className="h-2 rounded-full bg-slate-100 dark:bg-carbon-800 overflow-hidden">
                   <div className="h-full rounded-full bg-gradient-to-r from-tealbrand-500 to-tealbrand-600 transition-all" style={{ width: `${pct}%` }} />
                 </div>
               </div>
@@ -115,17 +115,17 @@ export function WardTable({ data = [] }) {
       {data.length === 0 ? <p className="py-10 text-center text-sm text-slate-500">No ward data</p> : (
         <div className="overflow-x-auto -mx-2">
           <table className="w-full text-sm">
-            <thead><tr className="text-left text-xs uppercase text-slate-500 border-b border-slate-200 dark:border-navy-700">
+            <thead><tr className="text-left text-xs uppercase text-slate-500 border-b border-slate-200 dark:border-carbon-700">
               <th className="py-2 px-2 font-medium">Ward</th><th className="py-2 px-2 font-medium">Total</th><th className="py-2 px-2 font-medium">Pending</th><th className="py-2 px-2 font-medium">Resolved</th><th className="py-2 px-2 font-medium">Rate</th>
             </tr></thead>
             <tbody>
               {data.map(w => (
-                <tr key={w.ward} className="border-b border-slate-100 dark:border-navy-800 last:border-0">
+                <tr key={w.ward} className="border-b border-slate-100 dark:border-carbon-800 last:border-0">
                   <td className="py-2.5 px-2 font-medium text-navy-800 dark:text-white">{w.ward}</td>
                   <td className="py-2.5 px-2 text-slate-600 dark:text-slate-300">{w.total}</td>
                   <td className="py-2.5 px-2 text-amber-600">{w.pending}</td>
                   <td className="py-2.5 px-2 text-emerald-600">{w.resolved}</td>
-                  <td className="py-2.5 px-2"><span className="badge bg-slate-100 text-slate-700 dark:bg-navy-800 dark:text-slate-300">{w.total ? Math.round((w.resolved/w.total)*100) : 0}%</span></td>
+                  <td className="py-2.5 px-2"><span className="badge bg-slate-100 text-slate-700 dark:bg-carbon-800 dark:text-slate-300">{w.total ? Math.round((w.resolved/w.total)*100) : 0}%</span></td>
                 </tr>
               ))}
             </tbody>
@@ -159,7 +159,7 @@ export function CategoryGrid({ data = [], title = 'Complaints by category', subt
             <Link
               key={item.category}
               to={`/complaints?category=${encodeURIComponent(item.category)}`}
-              className="group rounded-xl border border-slate-200 dark:border-navy-700 p-3 transition hover:border-tealbrand-400 hover:bg-tealbrand-50/40 dark:hover:bg-tealbrand-900/10"
+              className="group rounded-xl border border-slate-200 dark:border-carbon-700 p-3 transition hover:border-tealbrand-400 hover:bg-tealbrand-50/40 dark:hover:bg-tealbrand-900/10"
             >
               <div className="flex items-start justify-between gap-1">
                 <span className="text-xl font-bold text-navy-800 dark:text-white">{item.count}</span>

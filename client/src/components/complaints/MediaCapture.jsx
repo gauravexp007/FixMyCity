@@ -388,39 +388,61 @@ export default function MediaCapture({ files, setFiles, fallbackCoords }) {
   return (
     <div className="space-y-4">
       {/* Live geo status — the same fix that is stamped into the capture */}
-      <div className={`rounded-2xl border p-3.5 ${live
-        ? 'border-tealbrand-200 bg-tealbrand-50/70 dark:border-tealbrand-900/50 dark:bg-tealbrand-900/10'
-        : 'border-amber-200 bg-amber-50/70 dark:border-amber-900/50 dark:bg-amber-950/20'}`}>
-        <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
-          <span className={`flex items-center gap-2 text-sm font-semibold ${live ? 'text-tealbrand-800 dark:text-tealbrand-300' : 'text-amber-800 dark:text-amber-300'}`}>
-            <span className={`h-2.5 w-2.5 rounded-full ${live ? 'bg-tealbrand-500 animate-pulse' : 'bg-amber-500'}`} />
-            {geoStatus}
+      <div className={`overflow-hidden rounded-3xl border bg-gradient-to-br shadow-sm ${live
+        ? 'border-tealbrand-200/80 from-tealbrand-50 to-white dark:border-tealbrand-900/40 dark:from-tealbrand-900/20 dark:to-carbon-900'
+        : 'border-amber-200/80 from-amber-50 to-white dark:border-amber-900/40 dark:from-amber-950/25 dark:to-carbon-900'}`}>
+        <div className="flex items-start gap-3 p-4 sm:p-5">
+          <span className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl ${live
+            ? 'bg-tealbrand-600/10 text-tealbrand-700 dark:bg-tealbrand-500/15 dark:text-tealbrand-300'
+            : 'bg-amber-500/10 text-amber-700 dark:bg-amber-500/15 dark:text-amber-300'}`}>
+            <MapPin size={20} />
           </span>
-          {geo && (
-            <span className="font-mono text-xs text-slate-700 dark:text-slate-200">
-              {fmtCoord(geo.lat, geo.lng)}
-              {geo.accuracy ? <span className="ml-2 text-slate-500 dark:text-slate-400">±{geo.accuracy} m</span> : null}
-            </span>
-          )}
-          <span className="text-[11px] uppercase tracking-wide text-slate-500 dark:text-slate-400">{geoSource}</span>
-          {live?.at && <span className="text-[11px] text-slate-500 dark:text-slate-400">updated {live.at.toLocaleTimeString()}</span>}
-          {geo && (
-            <a href={mapsUrl(geo.lat, geo.lng)} target="_blank" rel="noreferrer"
-              className="ml-auto inline-flex items-center gap-1 text-xs font-medium text-navy-700 hover:underline dark:text-tealbrand-300">
-              <ExternalLink size={12} /> Google Maps
-            </a>
-          )}
+          <div className="min-w-0 flex-1">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className={`flex items-center gap-2 text-base font-semibold ${live ? 'text-tealbrand-800 dark:text-tealbrand-300' : 'text-amber-800 dark:text-amber-300'}`}>
+                <span className={`h-2.5 w-2.5 rounded-full ${live ? 'animate-pulse bg-tealbrand-500' : 'bg-amber-500'}`} />
+                {geoStatus}
+              </span>
+              <span className="rounded-full bg-white/70 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wider text-slate-600 dark:bg-white/10 dark:text-slate-300">{geoSource}</span>
+            </div>
+
+            {geo ? (
+              <>
+                <p className="mt-2 font-mono text-lg font-semibold tracking-tight text-slate-900 dark:text-white">
+                  {fmtCoord(geo.lat, geo.lng)}
+                  {geo.accuracy ? <span className="ml-2 align-middle text-xs font-normal text-slate-500 dark:text-slate-400">±{geo.accuracy} m</span> : null}
+                </p>
+                {geo.address && (
+                  <p className="mt-1 flex items-start gap-1.5 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
+                    <MapPin size={15} className="mt-0.5 shrink-0" /> <span>{geo.address}</span>
+                  </p>
+                )}
+              </>
+            ) : (
+              <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
+                {geoError ? 'Pin the issue location in step 2 to enable geo-tagged capture.' : 'Waiting for a GPS fix…'}
+              </p>
+            )}
+
+            <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-slate-500 dark:text-slate-400">
+              {live?.at && <span className="inline-flex items-center gap-1.5"><Radar size={13} /> updated {live.at.toLocaleTimeString()}</span>}
+              {geo && (
+                <a href={mapsUrl(geo.lat, geo.lng)} target="_blank" rel="noreferrer"
+                  className="inline-flex items-center gap-1.5 text-sm font-semibold text-tealbrand-700 hover:underline dark:text-tealbrand-300">
+                  <ExternalLink size={14} /> Open in Google Maps
+                </a>
+              )}
+            </div>
+
+            {geoError && <p className="mt-2 text-sm text-amber-800 dark:text-amber-300">{geoError}</p>}
+          </div>
         </div>
-        {geo?.address && <p className="mt-1.5 flex items-center gap-1 text-xs text-slate-600 dark:text-slate-300"><MapPin size={12} /> {geo.address}</p>}
-        {geoError && <p className="mt-1.5 text-xs text-amber-800 dark:text-amber-300">{geoError}</p>}
-        {!geo && !geoError && <p className="mt-1.5 text-xs text-slate-600 dark:text-slate-300">Waiting for a GPS fix…</p>}
-        {!geo && geoError && <p className="mt-1.5 text-xs text-slate-600 dark:text-slate-300">Pin the issue location in step 2 to enable geo-tagged capture.</p>}
       </div>
 
-      <div className="flex gap-2 p-1 rounded-xl bg-slate-100 dark:bg-navy-800 w-fit">
+      <div className="mx-auto flex w-fit gap-1 rounded-2xl border border-slate-200/80 bg-slate-100/80 p-1 dark:border-carbon-700 dark:bg-carbon-800/80">
         {[{ k: 'camera', label: 'Live Camera', icon: Camera }, { k: 'upload', label: 'Gallery Upload', icon: Upload }].map(t => (
           <button key={t.k} type="button" onClick={() => setTab(t.k)}
-            className={`flex items-center gap-2 rounded-lg px-3.5 py-2 text-sm font-medium transition ${tab === t.k ? 'bg-white dark:bg-navy-700 text-navy-800 dark:text-white shadow-sm' : 'text-slate-500 dark:text-slate-400'}`}>
+            className={`flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold transition ${tab === t.k ? 'bg-white text-navy-800 shadow-sm dark:bg-carbon-700 dark:text-white' : 'text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200'}`}>
             <t.icon size={16}/> {t.label}
           </button>
         ))}
@@ -429,8 +451,8 @@ export default function MediaCapture({ files, setFiles, fallbackCoords }) {
       {tab === 'camera' && (
         <div>
           {!streaming ? (
-            <div className="rounded-2xl border-2 border-dashed border-slate-200 dark:border-navy-700 bg-slate-50 dark:bg-navy-800/50 p-8 text-center">
-              <div className="mx-auto h-14 w-14 rounded-2xl bg-navy-50 dark:bg-navy-700 text-navy-600 dark:text-tealbrand-400 flex items-center justify-center"><Camera size={26}/></div>
+            <div className="mx-auto max-w-xl rounded-3xl border-2 border-dashed border-slate-200 bg-slate-50 p-8 text-center dark:border-carbon-700 dark:bg-carbon-800/40 sm:p-10">
+              <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-white text-navy-600 shadow-sm dark:bg-carbon-700 dark:text-tealbrand-400"><Camera size={26}/></div>
               <h4 className="mt-4 font-semibold text-navy-800 dark:text-white">Capture live evidence with your location</h4>
               <p className="mt-1 text-sm text-slate-500 dark:text-slate-400 max-w-sm mx-auto">Your browser will ask for camera, microphone and location permission. The coordinates and timestamp are printed onto the photo or video, and nothing is uploaded until you submit the complaint.</p>
               <button type="button" onClick={() => startCamera()} className="btn-primary mt-4"><Camera size={17}/> Enable camera</button>
@@ -442,46 +464,48 @@ export default function MediaCapture({ files, setFiles, fallbackCoords }) {
               )}
             </div>
           ) : (
-            <div className="space-y-3">
-              <div className="relative rounded-2xl overflow-hidden bg-black aspect-video">
-                <video ref={videoRef} autoPlay playsInline muted
-                  onLoadedData={() => setReady(true)}
-                  onCanPlay={() => setReady(true)}
-                  className="h-full w-full object-cover" />
-                {!ready && (
-                  <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-black text-white/80">
-                    <Loader2 size={22} className="animate-spin" />
-                    <p className="text-xs">Starting camera…</p>
+            <div className="space-y-4">
+              <div className="mx-auto w-full max-w-xl">
+                <div className="relative aspect-video overflow-hidden rounded-3xl bg-black shadow-xl ring-1 ring-slate-900/10 dark:ring-white/10">
+                  <video ref={videoRef} autoPlay playsInline muted
+                    onLoadedData={() => setReady(true)}
+                    onCanPlay={() => setReady(true)}
+                    className="h-full w-full object-cover" />
+                  {!ready && (
+                    <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-black text-white/80">
+                      <Loader2 size={22} className="animate-spin" />
+                      <p className="text-sm">Starting camera…</p>
+                    </div>
+                  )}
+                  {recording && <div className="absolute left-3 top-3 flex items-center gap-2 rounded-full bg-rose-600 px-3 py-1 text-xs font-semibold text-white shadow-lg"><span className="h-2 w-2 animate-pulse rounded-full bg-white"/>REC · geo-stamped</div>}
+                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent px-4 pb-4 pt-12">
+                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-white">
+                      <span className="flex items-center gap-1.5 text-sm font-semibold">
+                        <Radar size={15} className={geo ? 'text-tealbrand-300' : 'text-amber-300'} />
+                        {geo ? fmtCoord(geo.lat, geo.lng) : 'Acquiring GPS…'}
+                      </span>
+                      {geo?.accuracy ? <span className="text-xs text-white/70">±{geo.accuracy} m</span> : null}
+                      <span className="text-xs tabular-nums text-white/70">{now.toLocaleTimeString()}</span>
+                      {geo && (
+                        <a href={mapsUrl(geo.lat, geo.lng)} target="_blank" rel="noreferrer" className="ml-auto flex items-center gap-1 text-xs font-semibold text-tealbrand-300 hover:underline">
+                          <ExternalLink size={12} /> Map
+                        </a>
+                      )}
+                    </div>
+                    {geo?.address && <p className="mt-1 truncate text-sm text-white/85">{geo.address}</p>}
                   </div>
-                )}
-                {recording && <div className="absolute top-3 left-3 flex items-center gap-2 rounded-full bg-rose-600 px-3 py-1 text-xs font-semibold text-white"><span className="h-2 w-2 rounded-full bg-white animate-pulse"/>REC · geo-stamped</div>}
-                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 via-black/45 to-transparent p-3">
-                  <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-white">
-                    <span className="flex items-center gap-1.5 text-xs font-semibold">
-                      <Radar size={13} className={geo ? 'text-tealbrand-300' : 'text-amber-300'} />
-                      {geo ? fmtCoord(geo.lat, geo.lng) : 'Acquiring GPS…'}
-                    </span>
-                    {geo?.accuracy ? <span className="text-[11px] text-white/70">±{geo.accuracy} m</span> : null}
-                    <span className="text-[11px] tabular-nums text-white/70">{now.toLocaleTimeString()}</span>
-                    {geo && (
-                      <a href={mapsUrl(geo.lat, geo.lng)} target="_blank" rel="noreferrer" className="ml-auto flex items-center gap-1 text-[11px] text-tealbrand-300 hover:underline">
-                        <ExternalLink size={11} /> Map
-                      </a>
-                    )}
-                  </div>
-                  {geo?.address && <p className="mt-0.5 truncate text-[11px] text-white/80">{geo.address}</p>}
                 </div>
               </div>
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap justify-center gap-2">
                 <button type="button" onClick={capturePhoto} className="btn-primary"><Camera size={17}/> Capture photo</button>
                 <button type="button" onClick={toggleRecording} className={recording ? 'btn-secondary !text-rose-600 !border-rose-300' : 'btn-secondary'}>
                   {recording ? <><Square size={16}/> Stop recording</> : <><Video size={17}/> Record video</>}
                 </button>
                 <button type="button" onClick={() => startCamera(facing === 'environment' ? 'user' : 'environment')} className="btn-secondary"><RefreshCw size={16}/> Flip</button>
-                <button type="button" onClick={stopCamera} className="btn-secondary ml-auto">Turn off</button>
+                <button type="button" onClick={stopCamera} className="btn-secondary">Turn off</button>
               </div>
-              <p className="flex items-center gap-1.5 text-[11px] text-slate-500 dark:text-slate-400">
-                <ShieldCheck size={13} className="text-tealbrand-600"/> The coordinate banner is burned into the photo and video, so the municipal desk sees exactly where and when it was captured.
+              <p className="mx-auto flex max-w-xl items-start gap-1.5 text-xs leading-relaxed text-slate-500 dark:text-slate-400">
+                <ShieldCheck size={14} className="mt-0.5 shrink-0 text-tealbrand-600"/> The coordinate banner is burned into the photo and video, so the municipal desk sees exactly where and when it was captured.
               </p>
             </div>
           )}
@@ -493,8 +517,8 @@ export default function MediaCapture({ files, setFiles, fallbackCoords }) {
           <input ref={fileInputRef} type="file" accept="image/*,video/*" multiple className="hidden"
             onChange={(e) => { handleUpload(e.target.files); e.target.value = ''; }} />
           <button type="button" onClick={() => fileInputRef.current?.click()}
-            className="w-full rounded-2xl border-2 border-dashed border-slate-200 dark:border-navy-700 bg-slate-50 dark:bg-navy-800/50 p-8 text-center hover:border-tealbrand-400 hover:bg-tealbrand-50/40 dark:hover:bg-tealbrand-900/10 transition">
-            <div className="mx-auto h-14 w-14 rounded-2xl bg-white dark:bg-navy-700 text-navy-600 dark:text-tealbrand-400 flex items-center justify-center shadow-sm"><Upload size={24}/></div>
+            className="w-full rounded-2xl border-2 border-dashed border-slate-200 dark:border-carbon-700 bg-slate-50 dark:bg-carbon-800/50 p-8 text-center hover:border-tealbrand-400 hover:bg-tealbrand-50/40 dark:hover:bg-tealbrand-900/10 transition">
+            <div className="mx-auto h-14 w-14 rounded-2xl bg-white dark:bg-carbon-700 text-navy-600 dark:text-tealbrand-400 flex items-center justify-center shadow-sm"><Upload size={24}/></div>
             <h4 className="mt-4 font-semibold text-navy-800 dark:text-white">Choose photos or videos</h4>
             <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">JPG, PNG, HEIC, MP4 or WebM · up to 6 files · max 25 MB each</p>
             <p className="mt-1 text-xs text-slate-400 dark:text-slate-500">Uploads are tagged with your current location.</p>
@@ -509,7 +533,7 @@ export default function MediaCapture({ files, setFiles, fallbackCoords }) {
             {previews.map(({ file, url, isVideo, i }) => {
               const tag = file.geotag;
               return (
-                <div key={`${file.name}-${i}`} className="relative group rounded-xl overflow-hidden border border-slate-200 dark:border-navy-700 bg-slate-100 dark:bg-navy-800 aspect-video">
+                <div key={`${file.name}-${i}`} className="relative group rounded-xl overflow-hidden border border-slate-200 dark:border-carbon-700 bg-slate-100 dark:bg-carbon-800 aspect-video">
                   {isVideo ? (
                     <video src={url} className="h-full w-full object-cover" controls />
                   ) : (

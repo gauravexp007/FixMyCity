@@ -36,7 +36,7 @@ function Modal({ title, children, onClose }) {
       <div className="relative card w-full max-w-md p-6 max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between mb-4">
           <h3 className="font-semibold text-navy-800 dark:text-white">{title}</h3>
-          <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-navy-800"><X size={17} /></button>
+          <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-carbon-800"><X size={17} /></button>
         </div>
         {children}
       </div>
@@ -138,7 +138,7 @@ export default function ComplaintDetails() {
             </div>
             <h1 className="mt-2 text-2xl font-bold text-navy-900 dark:text-white">{complaint.title}</h1>
             <div className="mt-3 flex flex-wrap gap-2">
-              <span className="badge bg-slate-100 text-slate-600 dark:bg-navy-800 dark:text-slate-300">{complaint.category}</span>
+              <span className="badge bg-slate-100 text-slate-600 dark:bg-carbon-800 dark:text-slate-300">{complaint.category}</span>
               <span className={`badge ${SEVERITY_COLORS[complaint.severity] || 'bg-slate-100 text-slate-600'}`}>{complaint.severity} severity</span>
               {complaint.assignedDepartment && <span className="badge bg-indigo-50 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300">{complaint.assignedDepartment}</span>}
             </div>
@@ -171,7 +171,7 @@ export default function ComplaintDetails() {
                 <h3 className="text-sm font-medium text-slate-600 dark:text-slate-300 mb-2">Evidence ({complaint.media.length}) · geo-tagged</h3>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                   {complaint.media.map((m, i) => (
-                    <button key={i} onClick={() => setLightbox(m)} className="relative rounded-xl overflow-hidden border border-slate-200 dark:border-navy-700 aspect-video bg-slate-100 dark:bg-navy-800 group">
+                    <button key={i} onClick={() => setLightbox(m)} className="relative rounded-xl overflow-hidden border border-slate-200 dark:border-carbon-700 aspect-video bg-slate-100 dark:bg-carbon-800 group">
                       {m.type === 'video' ? (
                         <><video src={m.url} className="h-full w-full object-cover" /><div className="absolute inset-0 flex items-center justify-center bg-black/30"><Film className="text-white" size={22} /></div></>
                       ) : <img src={m.url} alt="" className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300" />}
@@ -202,7 +202,7 @@ export default function ComplaintDetails() {
                 </a>
               )}
               {complaint.location?.source && (
-                <span className="badge bg-slate-100 text-slate-600 dark:bg-navy-800 dark:text-slate-300">
+                <span className="badge bg-slate-100 text-slate-600 dark:bg-carbon-800 dark:text-slate-300">
                   {complaint.location.source === 'gps' ? 'GPS verified'
                     : complaint.location.source === 'map' ? 'Pinned by citizen'
                       : complaint.location.source === 'address' ? 'Approximate from address' : complaint.location.source}
@@ -213,10 +213,10 @@ export default function ComplaintDetails() {
 
           <section className="card p-6">
             <h2 className="font-semibold text-navy-800 dark:text-white mb-5">Status timeline</h2>
-            <ol className="relative border-l-2 border-slate-200 dark:border-navy-700 ml-2 space-y-6">
+            <ol className="relative border-l-2 border-slate-200 dark:border-carbon-700 ml-2 space-y-6">
               {complaint.timeline?.map((t, i) => (
                 <li key={t._id || i} className="ml-5">
-                  <span className="absolute -left-[9px] flex h-4 w-4 items-center justify-center rounded-full bg-white dark:bg-navy-900 border-2 border-tealbrand-500">
+                  <span className="absolute -left-[9px] flex h-4 w-4 items-center justify-center rounded-full bg-white dark:bg-carbon-900 border-2 border-tealbrand-500">
                     <span className="h-1.5 w-1.5 rounded-full bg-tealbrand-500" />
                   </span>
                   <div className="flex flex-wrap items-center gap-2">
@@ -228,7 +228,7 @@ export default function ComplaintDetails() {
                   {t.media?.length > 0 && (
                     <div className="mt-2 flex gap-2 flex-wrap">
                       {t.media.map((m, mi) => (
-                        <button key={mi} onClick={() => setLightbox(m)} className="h-16 w-24 rounded-lg overflow-hidden border border-slate-200 dark:border-navy-700">
+                        <button key={mi} onClick={() => setLightbox(m)} className="h-16 w-24 rounded-lg overflow-hidden border border-slate-200 dark:border-carbon-700">
                           {m.type === 'video' ? <video src={m.url} className="h-full w-full object-cover" /> : <img src={m.url} alt="" className="h-full w-full object-cover" />}
                         </button>
                       ))}
@@ -253,7 +253,7 @@ export default function ComplaintDetails() {
                 <form onSubmit={submitFeedback} className="space-y-4">
                   <div className="flex items-center gap-2">
                     {[1, 2, 3, 4, 5].map(n => (
-                      <button key={n} type="button" onClick={() => setFeedback(f => ({ ...f, rating: n }))} className={`p-1 transition ${n <= feedback.rating ? 'text-amber-500' : 'text-slate-300 dark:text-navy-600'}`}>
+                      <button key={n} type="button" onClick={() => setFeedback(f => ({ ...f, rating: n }))} className={`p-1 transition ${n <= feedback.rating ? 'text-amber-500' : 'text-slate-300 dark:text-carbon-600'}`}>
                         <Star size={28} fill={n <= feedback.rating ? 'currentColor' : 'none'} />
                       </button>
                     ))}
@@ -262,7 +262,7 @@ export default function ComplaintDetails() {
                   <button disabled={busy} className="btn-primary">{busy ? 'Submitting...' : 'Submit feedback'}</button>
                 </form>
               )}
-              <div className="mt-6 pt-5 border-t border-slate-200 dark:border-navy-700">
+              <div className="mt-6 pt-5 border-t border-slate-200 dark:border-carbon-700">
                 <h3 className="text-sm font-semibold text-navy-800 dark:text-white flex items-center gap-2"><RotateCcw size={16} /> Problem still not fixed?</h3>
                 <p className="text-xs text-slate-500 mt-1">Reopening sends the complaint back for verification by the authority.</p>
                 <form onSubmit={submitReopen} className="mt-3 flex flex-col sm:flex-row gap-2">

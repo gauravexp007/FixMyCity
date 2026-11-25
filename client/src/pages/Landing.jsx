@@ -26,8 +26,8 @@ const steps = [
 export default function Landing() {
   const { user } = useAuth();
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-navy-950 text-slate-800 dark:text-slate-100">
-      <header className="sticky top-0 z-40 border-b border-slate-200/60 dark:border-navy-700/60 bg-white/80 dark:bg-navy-950/80 backdrop-blur-xl">
+    <div className="min-h-screen bg-slate-50 dark:bg-carbon-950 text-slate-800 dark:text-slate-100">
+      <header className="sticky top-0 z-40 border-b border-slate-200/60 dark:border-carbon-700/60 bg-white/80 dark:bg-carbon-950/80 backdrop-blur-xl">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-navy-700 to-tealbrand-600 text-white font-bold flex items-center justify-center">CT</div>
@@ -82,12 +82,12 @@ export default function Landing() {
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   {[{l:'Total',v:'1,284',c:'text-navy-700 dark:text-white'},{l:'Pending',v:'142',c:'text-amber-600'},{l:'In Progress',v:'87',c:'text-cyan-600'},{l:'Resolved',v:'1,031',c:'text-emerald-600'}].map(s=>(
-                    <div key={s.l} className="rounded-xl bg-slate-50 dark:bg-navy-800 p-4"><p className="text-sm text-slate-500">{s.l}</p><p className={`text-2xl font-bold ${s.c}`}>{s.v}</p></div>
+                    <div key={s.l} className="rounded-xl bg-slate-50 dark:bg-carbon-800 p-4"><p className="text-sm text-slate-500">{s.l}</p><p className={`text-2xl font-bold ${s.c}`}>{s.v}</p></div>
                   ))}
                 </div>
                 <div className="mt-5 space-y-3">
                   {[{t:'Pothole on Main St',s:'In Progress',d:'Ward 5'},{t:'Streetlight not working',s:'Assigned',d:'Ward 2'}].map((c,i)=>(
-                    <div key={i} className="flex items-center justify-between rounded-xl border border-slate-200 dark:border-navy-700 p-3">
+                    <div key={i} className="flex items-center justify-between rounded-xl border border-slate-200 dark:border-carbon-700 p-3">
                       <div><p className="text-sm font-medium text-navy-800 dark:text-white">{c.t}</p><p className="text-xs text-slate-500">{c.d}</p></div>
                       <span className={`badge ${c.s==='In Progress'?'bg-cyan-100 text-cyan-700':'bg-indigo-100 text-indigo-700'}`}>{c.s}</span>
                     </div>
@@ -103,7 +103,7 @@ export default function Landing() {
         </div>
       </section>
 
-      <section id="impact" className="py-10 border-y border-slate-200/60 dark:border-navy-800 bg-white dark:bg-navy-900/30">
+      <section id="impact" className="py-10 border-y border-slate-200/60 dark:border-carbon-800 bg-white dark:bg-carbon-900/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 md:grid-cols-4 gap-6">
           {stats.map(s => (<div key={s.label} className="text-center"><p className="text-3xl font-extrabold text-navy-800 dark:text-white">{s.value}</p><p className="text-sm text-slate-500 mt-1">{s.label}</p></div>))}
         </div>
@@ -158,7 +158,7 @@ export default function Landing() {
         </div>
       </section>
 
-      <footer className="border-t border-slate-200 dark:border-navy-800 py-8">
+      <footer className="border-t border-slate-200 dark:border-carbon-800 py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-slate-500">
           <div className="flex items-center gap-2"><div className="h-8 w-8 rounded-lg bg-navy-700 text-white flex items-center justify-center font-bold text-xs">CT</div><span>CivicTrack</span></div>
           <p>Transparent civic issue reporting & management.</p>

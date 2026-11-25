@@ -27,7 +27,7 @@ export default function ComplaintCard({ c }) {
       <span className={`absolute inset-x-0 top-0 h-1 ${STATUS_ACCENT[c.status] || 'bg-slate-300'}`} />
 
       {cover ? (
-        <div className="relative h-44 bg-slate-100 dark:bg-navy-800 overflow-hidden">
+        <div className="relative h-44 bg-slate-100 dark:bg-carbon-800 overflow-hidden">
           <img src={cover.url} alt="" className="h-full w-full object-cover group-hover:scale-[1.03] transition-transform duration-300" />
           <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/55 to-transparent" />
           <div className="absolute bottom-2 left-2 flex flex-wrap gap-1.5">
@@ -49,7 +49,7 @@ export default function ComplaintCard({ c }) {
           </div>
         </div>
       ) : (
-        <div className="h-28 bg-gradient-to-br from-slate-100 to-slate-50 dark:from-navy-800 dark:to-navy-900 flex flex-col items-center justify-center gap-1.5 text-slate-400">
+        <div className="h-28 bg-gradient-to-br from-slate-100 to-slate-50 dark:from-carbon-800 dark:to-carbon-900 flex flex-col items-center justify-center gap-1.5 text-slate-400">
           <MapPin size={22}/>
           <span className="text-[10px] font-medium uppercase tracking-wide">No photo attached</span>
         </div>
@@ -65,7 +65,7 @@ export default function ComplaintCard({ c }) {
         </div>
         <p className="mt-2 text-sm text-slate-500 dark:text-slate-400 line-clamp-2">{c.description}</p>
         <div className="mt-3 flex flex-wrap gap-1.5">
-          <span className="badge bg-slate-100 text-slate-600 dark:bg-navy-800 dark:text-slate-300">{c.category}</span>
+          <span className="badge bg-slate-100 text-slate-600 dark:bg-carbon-800 dark:text-slate-300">{c.category}</span>
           <span className={`badge ${SEVERITY_COLORS[c.severity] || 'bg-slate-100 text-slate-600'}`}>{c.severity}</span>
           {c.isSeed && <span className="badge bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-300">Sample</span>}
           {c.priority && c.priority !== 'Normal' && <span className="badge bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300">Priority: {c.priority}</span>}
